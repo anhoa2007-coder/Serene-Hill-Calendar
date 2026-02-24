@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Ended - Insert News Here</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #2c3e50;
+            /* Calm, moody nature background */
+            background-image: url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Gentle Floating Animation */
+        .float-gentle {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Social Icon Hover Glow */
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            transform: scale(1.1);
+        }
+
+        .schedule-line {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .schedule-line::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.6);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen text-white relative">
+
+    <!-- Dark Overlay for readability -->
+    <div class="absolute inset-0 bg-black/30 z-0"></div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 w-full max-w-4xl p-6 flex flex-col items-center">
+        
+        <!-- Main Message Card -->
+        <div class="glass-panel w-full rounded-3xl p-10 md:p-14 text-center float-gentle">
+            
+            <!-- Channel Name -->
+            <h2 class="text-sm md:text-base tracking-[0.3em] uppercase text-white/70 mb-4 font-bold">
+                THE LIGHTNING NEWS
+            </h2>
+
+            <!-- Main Heading -->
+            <h1 class="serif-font text-5xl md:text-7xl mb-6 text-white drop-shadow-lg italic">
+                Stream Ended
+            </h1>
+            
+            <p class="text-xl text-white/80 font-light mb-10 max-w-2xl mx-auto leading-relaxed">
+                Thank you for tuning in. Stay calm, stay informed, and we will see you soon.
+            </p>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-10"></div>
+
+            <!-- Schedule Grid -->
+            <div class="grid md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto mb-10">
+                
+                <!-- Weekday Schedule -->
+                <div class="glass-card rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="far fa-newspaper text-xl text-white/80"></i>
+                        <h3 class="font-bold text-lg">Weekday Edition</h3>
+                    </div>
+                    <div class="text-white/70 text-sm space-y-2">
+                        <div class="schedule-line">Monday to Friday</div>
+                        <div class="pl-6 text-white/50 text-xs">Full daily coverage & analysis</div>
+                    </div>
+                </div>
+
+                <!-- Weekend Schedule -->
+                <div class="glass-card rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i class="fas fa-coffee text-xl text-white/80"></i>
+                        <h3 class="font-bold text-lg">Mini Edition</h3>
+                    </div>
+                    <div class="text-white/70 text-sm space-y-2">
+                        <div class="schedule-line">Saturday & Sunday</div>
+                        <div class="pl-6 text-white/50 text-xs">Byte-sized updates & summary</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Social Media -->
+            <div class="flex justify-center gap-8 text-2xl text-white/50">
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+            </div>
+
+            <div class="mt-8 text-xs text-white/30 tracking-wider">
+                © LOSERFAN2020
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Optional subtle particle background script (keeps it lightweight) -->
+    <canvas id="canvas" class="absolute inset-0 z-0 pointer-events-none opacity-30"></canvas>
+
+    <script>
+        // Simple particle system for extra calmness
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2;
+                this.opacity = Math.random() * 0.5;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            initParticles();
+        });
+
+        resize();
+        initParticles();
+        animate();
+    </script>
+</body>
+</html>

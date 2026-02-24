@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serene Hill Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #2c3e50;
+            background-image: url('https://images.unsplash.com/photo-1519681393784-d8e5b5a4570e?q=80&w=2074&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        /* Improved Text Readability - cleaner shadow */
+        .text-readability {
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .calendar-day-hover:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .quote-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3); 
+            border-radius: 4px;
+        }
+
+        .today-highlight {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a202c;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            text-shadow: none;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dark Mode / Dim Classes */
+        .overlay-dim {
+            background-color: rgba(0, 0, 0, 0.6) !important; /* Darker overlay */
+        }
+        
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen text-white relative">
+
+    <!-- Overlay: Controls overall brightness -->
+    <div id="bg-overlay" class="absolute inset-0 bg-black/20 z-0 pointer-events-none transition-colors duration-500"></div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 w-full max-w-5xl p-4 md:p-8 flex flex-col md:flex-row gap-8 items-stretch h-full md:h-auto max-h-screen overflow-y-auto md:overflow-visible">
+        
+        <!-- Left Side: Quote & Info -->
+        <div id="left-panel" class="flex-1 flex flex-col justify-between glass-panel rounded-3xl p-8 text-center md:text-left min-h-[300px]">
+            
+            <!-- Time Display -->
+            <div class="text-readability">
+                <div id="clock" class="text-5xl md:text-6xl font-light tracking-wider mb-2">00:00</div>
+                <div id="full-date" class="text-lg text-gray-100 uppercase tracking-widest font-semibold">Loading...</div>
+            </div>
+
+            <!-- Quote Section -->
+            <div class="mt-8 md:mt-0 text-readability">
+                <i class="fas fa-quote-left text-3xl text-white/60 mb-4 block"></i>
+                <p id="quote-text" class="quote-font text-2xl md:text-3xl italic leading-relaxed text-white">
+                    "Loading inspiration..."
+                </p>
+                <p id="quote-author" class="mt-4 text-sm font-bold uppercase tracking-widest text-white/90">
+                    - Unknown
+                </p>
+                
+                <!-- Controls -->
+                <div class="flex flex-wrap gap-2 mt-6 justify-center md:justify-start">
+                    <button onclick="newQuote()" class="text-xs bg-white/20 hover:bg-white/30 transition-colors py-2 px-4 rounded-full border border-white/20 backdrop-blur-sm shadow-sm" title="New Quote">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    
+                    <button onclick="changeWallpaper()" class="text-xs bg-white/20 hover:bg-white/30 transition-colors py-2 px-4 rounded-full border border-white/20 backdrop-blur-sm shadow-sm" title="Random Wallpaper">
+                        <i class="fas fa-random"></i>
+                    </button>
+
+                    <!-- Upload Button -->
+                    <label for="wallpaper-upload" class="cursor-pointer text-xs bg-white/20 hover:bg-white/30 transition-colors py-2 px-4 rounded-full border border-white/20 backdrop-blur-sm shadow-sm flex items-center">
+                        <i class="fas fa-upload mr-2"></i> Upload BG
+                    </label>
+                    <input type="file" id="wallpaper-upload" accept="image/*" class="hidden" onchange="uploadWallpaper(event)">
+
+                    <!-- Dim Toggle -->
+                    <button onclick="toggleDim()" class="text-xs bg-white/20 hover:bg-white/30 transition-colors py-2 px-4 rounded-full border border-white/20 backdrop-blur-sm shadow-sm" title="Toggle Darker Mode">
+                        <i class="fas fa-moon mr-2"></i> Dim
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Calendar -->
+        <div id="right-panel" class="flex-1 glass-panel rounded-3xl p-6 md:p-8 flex flex-col">
+            <!-- Calendar Header -->
+            <div class="flex justify-between items-center mb-6 text-readability">
+                <div>
+                    <h2 id="current-month" class="text-3xl font-bold drop-shadow-lg">Month</h2>
+                    <span id="current-year" class="text-xl text-gray-200 font-light drop-shadow-md">Year</span>
+                </div>
+                <div class="flex gap-2">
+                    <button id="prev-month" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/30 flex items-center justify-center transition backdrop-blur-sm border border-white/10 shadow-sm">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button id="next-month" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/30 flex items-center justify-center transition backdrop-blur-sm border border-white/10 shadow-sm">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Days of Week -->
+            <div class="grid grid-cols-7 mb-4 text-center text-readability">
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Sun</div>
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Mon</div>
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Tue</div>
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Wed</div>
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Thu</div>
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Fri</div>
+                <div class="text-sm font-bold text-white/90 uppercase drop-shadow-md">Sat</div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar-grid grid grid-cols-7 gap-2 text-center text-sm md:text-base flex-grow text-readability">
+                <!-- Days will be injected here via JS -->
+            </div>
+            
+            <button onclick="resetToToday()" class="mt-4 text-xs text-center text-white/60 hover:text-white transition w-full text-readability font-semibold shadow-sm">
+                Jump to Today
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const quotes = [
+            { text: "The best view comes after the hardest climb.", author: "Anonymous" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+            { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+            { text: "Happiness is not something ready made. It comes from your own actions.", author: "Dalai Lama" },
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
+            { text: "You are never too old to set another goal or to dream a new dream.", author: "C.S. Lewis" },
+            { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+            { text: "Every mountain top is within reach if you just keep climbing.", author: "Barry Finlay" }
+        ];
+
+        const wallpapers = [
+            'https://images.unsplash.com/photo-1519681393784-d8e5b5a4570e?q=80&w=2074&auto=format&fit=crop', // Original Hill
+            'https://images.unsplash.com/photo-1448375240586-dfd8f3793300?q=80&w=2000&auto=format&fit=crop', // Forest
+            'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=2000&auto=format&fit=crop', // Lake/Mountain
+            'https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?q=80&w=2000&auto=format&fit=crop', // Night Sky
+            'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2000&auto=format&fit=crop', // Green Hills
+            'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?q=80&w=2000&auto=format&fit=crop'  // Misty Forest
+        ];
+
+        // --- State ---
+        let currDate = new Date();
+        let currMonth = currDate.getMonth();
+        let currYear = currDate.getFullYear();
+        let isDimmed = false;
+
+        // --- Elements ---
+        const monthElement = document.getElementById('current-month');
+        const yearElement = document.getElementById('current-year');
+        const calendarGrid = document.querySelector('.calendar-grid');
+        const quoteText = document.getElementById('quote-text');
+        const quoteAuthor = document.getElementById('quote-author');
+        const clockElement = document.getElementById('clock');
+        const fullDateElement = document.getElementById('full-date');
+        const overlayElement = document.getElementById('bg-overlay');
+        const leftPanel = document.getElementById('left-panel');
+        const rightPanel = document.getElementById('right-panel');
+
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+
+        // --- Functions ---
+
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        function getFebDays(year) {
+            return isLeapYear(year) ? 29 : 28;
+        }
+
+        function renderCalendar() {
+            let daysOfMonth = [
+                31, getFebDays(currYear), 31, 30, 31, 30,
+                31, 31, 30, 31, 30, 31
+            ];
+
+            calendarGrid.innerHTML = '';
+            
+            // Fade animation trigger
+            calendarGrid.classList.remove('fade-in');
+            void calendarGrid.offsetWidth; // trigger reflow
+            calendarGrid.classList.add('fade-in');
+
+            monthElement.innerText = months[currMonth];
+            yearElement.innerText = currYear;
+
+            let firstDay = new Date(currYear, currMonth, 1).getDay();
+
+            // Previous month padding
+            for (let i = 0; i < firstDay; i++) {
+                let day = document.createElement('div');
+                day.classList.add('text-white/20', 'py-2'); 
+                day.innerText = '';
+                calendarGrid.appendChild(day);
+            }
+
+            // Days of current month
+            for (let i = 1; i <= daysOfMonth[currMonth]; i++) {
+                let day = document.createElement('div');
+                day.classList.add('calendar-day-hover', 'rounded-lg', 'flex', 'items-center', 'justify-center', 'py-3', 'md:py-4', 'font-medium', 'drop-shadow-sm');
+                day.innerText = i;
+
+                // Check for "Today"
+                let today = new Date();
+                if (i === today.getDate() && currMonth === today.getMonth() && currYear === today.getFullYear()) {
+                    day.classList.add('today-highlight');
+                } else {
+                    day.classList.add('bg-white/5'); 
+                }
+
+                calendarGrid.appendChild(day);
+            }
+        }
+
+        // --- Navigation Logic ---
+        document.getElementById('prev-month').onclick = () => {
+            currMonth--;
+            if (currMonth < 0) {
+                currMonth = 11;
+                currYear--;
+            }
+            renderCalendar();
+        };
+
+        document.getElementById('next-month').onclick = () => {
+            currMonth++;
+            if (currMonth > 11) {
+                currMonth = 0;
+                currYear++;
+            }
+            renderCalendar();
+        };
+
+        function resetToToday() {
+            let today = new Date();
+            currMonth = today.getMonth();
+            currYear = today.getFullYear();
+            renderCalendar();
+        }
+
+        // --- Wallpaper & Display Logic ---
+        function changeWallpaper() {
+            const randomIdx = Math.floor(Math.random() * wallpapers.length);
+            const url = wallpapers[randomIdx];
+            document.body.style.backgroundImage = `url('${url}')`;
+        }
+
+        function uploadWallpaper(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = `url('${e.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function toggleDim() {
+            isDimmed = !isDimmed;
+            
+            if (isDimmed) {
+                overlayElement.classList.add('overlay-dim');
+                leftPanel.classList.add('glass-dark');
+                rightPanel.classList.add('glass-dark');
+            } else {
+                overlayElement.classList.remove('overlay-dim');
+                leftPanel.classList.remove('glass-dark');
+                rightPanel.classList.remove('glass-dark');
+            }
+        }
+
+        // --- Quote Logic ---
+        function newQuote() {
+            quoteText.style.opacity = 0;
+            quoteAuthor.style.opacity = 0;
+            
+            setTimeout(() => {
+                const randomIdx = Math.floor(Math.random() * quotes.length);
+                quoteText.innerText = `"${quotes[randomIdx].text}"`;
+                quoteAuthor.innerText = `- ${quotes[randomIdx].author}`;
+                
+                quoteText.style.transition = "opacity 0.5s";
+                quoteAuthor.style.transition = "opacity 0.5s";
+                quoteText.style.opacity = 1;
+                quoteAuthor.style.opacity = 1;
+            }, 300);
+        }
+
+        // --- Clock Logic ---
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            clockElement.innerText = `${hours}:${minutes}`;
+
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            fullDateElement.innerText = now.toLocaleDateString(undefined, options);
+        }
+
+        // --- Initialization ---
+        renderCalendar();
+        newQuote();
+        setInterval(updateClock, 1000);
+        updateClock();
+
+    </script>
+</body>
+</html>
